@@ -1,0 +1,38 @@
+
+services:
+  auth-service:
+    build:
+      context: ./auth_service
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./auth_service/.env
+    volumes:
+      - ./auth_service:/app        # Live code syncing
+      - /app/node_modules          # Prevents conflict with local node_modules
+    networks:
+      - aarvasa-net
+
+  chatbot-service:
+    build:
+      context: ./chatbot_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./chatbot_service/.env
+    networks:
+      - aarvasa-net
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - aarvasa-net
+
+networks:
+  aarvasa-net:
+    driver: bridge
